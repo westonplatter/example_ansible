@@ -1,0 +1,16 @@
+---
+- name: update apt
+  sudo: yes
+  apt: update_cache=yes cache_valid_time=3600
+
+- name: install pip dependencies
+  apt: pkg={{ item }} state=present
+  sudo: yes
+  with_items:
+    - git-core
+    - python-setuptools
+    - python-dev
+
+- name: install pip
+  sudo: yes
+  easy_install: name=pip

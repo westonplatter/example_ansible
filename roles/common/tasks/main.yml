@@ -1,0 +1,13 @@
+---
+- name: update apt
+  sudo: yes
+  apt: update_cache=yes cache_valid_time=3600
+
+- name: install basic apt packages
+  sudo: yes
+  apt: pkg={{ item }} state=present
+  with_items: 
+    - curl
+    - git
+    - build-essential
+    - vim

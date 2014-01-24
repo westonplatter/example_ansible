@@ -1,0 +1,12 @@
+---
+- name: redis slave server
+  sudo: yes
+  user: ubuntu
+  hosts: redis-slave
+  vars_files: 
+    - vars/zzet.rbenv.yml
+    - vars/secrets.yml
+  roles: 
+    - common
+    - zzet.rbenv
+    - {role: redis, redis_slave: true }

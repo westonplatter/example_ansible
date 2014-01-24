@@ -1,0 +1,29 @@
+secrets.yml
+
+.DS_Store
+
+# Vagrant stuff
+acceptance_config.yml
+boxes/*
+/Vagrantfile
+/.vagrant
+/vagrant-spec.config.rb
+
+# Bundler/Rubygems
+*.gem
+.bundle
+pkg/*
+tags
+/Gemfile.lock
+test/tmp/
+
+
+# IDE junk
+.idea/*
+*.iml
+
+# Ruby Managers
+.rbenv
+.ruby-gemset
+.ruby-version
+.rvmrc

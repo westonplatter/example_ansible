@@ -1,0 +1,13 @@
+---
+- name: mongo slave server
+  sudo: yes
+  user: ubuntu
+  hosts: mongo-replica2
+  vars_files: 
+    - vars/zzet.rbenv.yml
+    - vars/secrets.yml
+  roles: 
+    # - common
+    # - zzet.rbenv
+    - {role: mongo, mongo.setname: 2 }
+

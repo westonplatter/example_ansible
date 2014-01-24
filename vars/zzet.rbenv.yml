@@ -1,0 +1,8 @@
+---
+rbenv:
+  env: 'user'
+  ruby_version: '2.0.0-p353'
+  version: 'v0.4.0'
+
+users:
+  - { name: "{{ ansible_ssh_user }}", home: "/home/{{ ansible_ssh_user }}", comment: 'deploy user' }

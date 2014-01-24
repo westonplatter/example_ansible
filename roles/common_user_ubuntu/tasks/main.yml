@@ -1,0 +1,46 @@
+---
+- name: add ubuntu group
+  sudo: true
+  group: name={{ group }}
+
+- name: add user
+  sudo: true
+  user: name={{ user }} 
+        group={{ group }} 
+        shell=/bin/bash
+        password={{ password }}
+
+- name: Add user to sudoers
+  action: lineinfile 
+          dest=/etc/sudoers 
+          regexp="{{ user }} ALL" 
+          line="{{ user }} ALL=(ALL) ALL" 
+          state=present
+    
+- name: add public key to user authorized keys
+  sudo: true
+  authorized_key: "user={{ user }} key='{{ item }}'"
+  with_file:
+    - westonplatter@gmail.com.pub
+
+- name: allow user to ssh
+  sudo: true
+  lineinfile: "dest=/etc/ssh/sshd_config 
+              regexp='AllowUsers {{ user }}' 
+              line='AllowUsers {{ user }}'"
+
+- name: restart ssh
+  sudo: true
+  service: name=ssh state=restarted
+  
+- name: Remove sudo group rights
+  action: lineinfile dest=/etc/sudoers 
+          regexp="^%sudo" 
+          state=absent
+
+- name: disallow root SSH access
+  sudo: yes
+  action: lineinfile dest=/etc/ssh/sshd_config 
+          regexp="^PermitRootLogin" 
+          line="PermitRootLogin no" 
+          state=present

@@ -1,0 +1,10 @@
+---
+- name: create expected capistrano dirs
+  sudo: yes
+  file: name=/var/www/stride_rails
+        state=directory
+        owner={{ ansible_ssh_user }}
+        group=root
+        mode=0755
+  tags: 
+    - www

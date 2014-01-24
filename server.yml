@@ -1,0 +1,15 @@
+---
+- name: stride server
+  sudo: yes
+  hosts: server
+  vars_files: 
+    - vars/zzet.rbenv.yml
+  roles: 
+    - common
+    - nginx
+    - mongo
+    - nodejs
+    - zzet.rbenv
+    - imagemagick
+    - stride_nginx_vhost
+    - stride_www_folder

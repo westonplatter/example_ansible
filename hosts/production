@@ -1,0 +1,38 @@
+# === SERVER ===================================================================
+
+[server]
+111.170.6.18
+
+
+# === MONGO ====================================================================
+
+[mongo-primary]
+111.241.251.141
+
+[mongo-replica1]
+111.243.219.20
+
+[mongo-replica2]
+111.243.217.66
+
+[mongo:children]
+mongo-primary
+mongo-replica1
+mongo-replica2
+
+# === REDIS ====================================================================
+
+[redis-master]
+111.243.106.59
+
+[redis-slave]
+111.243.207.54
+
+[redis:children]
+redis-master
+redis-slave
+
+# === UBUNTU-CHANGE ============================================================
+
+[ubuntu-change:children]
+

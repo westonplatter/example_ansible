@@ -1,0 +1,21 @@
+---
+- name: copy available hosts
+  sudo: yes
+  copy: src=stride.io 
+        dest=/etc/nginx/sites-available/stride.io
+  tags:
+    - nginx
+    - vhosts
+
+- name: link sites-available entry to sites-enabled
+  sudo: yes
+  file: src=/etc/nginx/sites-available/stride.io 
+        dest=/etc/nginx/sites-enabled/stride.io
+        state=link
+  tags:
+    - nginx
+    - www
+    
+- name: restart nginx
+  service: name=nginx state=restarted
+  sudo: yes

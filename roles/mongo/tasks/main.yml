@@ -1,0 +1,50 @@
+---
+- name: Add 10gen key
+  sudo: yes
+  action: apt_key id=7F0CEB10 url="http://docs.mongodb.org/10gen-gpg-key.asc" state=present
+
+- name: Copy 10gen.list to /etc/apt/sources.list.d
+  sudo: yes
+  copy: src=10gen.list dest=/etc/apt/sources.list.d/10gen.list
+
+- name: update apt
+  sudo: yes
+  apt: update_cache=yes
+
+- name: Install MongoDB
+  sudo: yes
+  apt: pkg=mongodb-10gen state=present
+
+- name: Copy over mongo.conf
+  sudo: yes
+  template: src=mongo.conf.j2 
+            dest=/etc/mongo.conf
+            owner={{ ansible_ssh_user }}
+            group=root
+
+- name: ensure mongodb is started
+  sudo: yes
+  service: name=mongodb state=started 
+
+- name: install pymongo dependencies
+  sudo: yes
+  apt: pkg={{ item }}
+  with_items:
+    - build-essential
+    - python-dev
+
+- name: install mongodb_user module dependencies
+  sudo: yes
+  pip: name=pymongo
+       version=2.5
+
+- name: create user
+  sudo: yes
+  mongodb_user: user=root
+                password={{ m.password }} 
+                state=present
+                database=admin
+                  
+- name: restart mongo with auth enabled
+  sudo: yes
+  service:  name=mongodb state=restarted

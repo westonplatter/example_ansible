@@ -1,0 +1,14 @@
+---
+- name: mongo master server
+  sudo: yes
+  user: ubuntu
+  hosts: mongo-primary
+  vars_files: 
+    - vars/zzet.rbenv.yml
+    - vars/secrets.yml
+  roles: 
+    - common
+    - zzet.rbenv
+    - pip
+    - mongo
+

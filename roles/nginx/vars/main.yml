@@ -1,0 +1,5 @@
+---
+user: nobody
+worker_processes: 1
+pid_path: /var/run/nginx.pid 
+worker_connections: 1024

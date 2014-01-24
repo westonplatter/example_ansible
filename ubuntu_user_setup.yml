@@ -1,0 +1,8 @@
+---
+- name: setup
+  hosts: ubuntu-change
+  user: root
+  roles:
+    - common_user_ubuntu  
+  vars_files: 
+    - vars/secrets.yml

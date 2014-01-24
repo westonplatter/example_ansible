@@ -1,0 +1,80 @@
+---
+- name: update apt cache
+  sudo: yes
+  apt:  update_cache=yes 
+        cache_valid_time=3600
+
+- name: get redis source
+  get_url:  url=http://download.redis.io/releases/redis-{{ redis_version }}.tar.gz
+            dest=/home/{{ ansible_ssh_user }}/redis-{{ redis_version }}.tar.gz
+
+- name: untar and defeather redis
+  command:  tar -xzf redis-{{ redis_version }}.tar.gz
+            chdir=/home/{{ ansible_ssh_user}}
+            creates=/home/{{ ansible_ssh_user }}/redis-{{ redis_version }}
+
+- name: install build tools
+  sudo: yes
+  apt:  pkg=build-essential state=present
+
+- name: build redis
+  command:  make 
+            chdir=/home/{{ ansible_ssh_user }}/redis-{{ redis_version }}
+            creates=/home/{{ ansible_ssh_user }}/redis-{{ redis_version }}/src/redis-server
+
+- name: stop redis-server
+  ignore_errors: true
+  action: service 
+          name=redis
+          state=stopped
+          enabled=yes
+
+- name: install redis
+  sudo: yes
+  command:  make install 
+            chdir=/home/{{ ansible_ssh_user }}/redis-{{ redis_version }}
+            creates=/usr/local/bin/redis-server
+
+- name: create redis operation dirs
+  sudo: yes
+  file: path={{ item }}
+        state=directory
+        owner={{ ansible_ssh_user }}
+        group=root
+  with_items:
+    - /etc/redis
+    - /var/lib/redis
+
+- name: place redis logfile
+  sudo: yes
+  copy: dest=/var/log/redis.log content="" 
+        force=no
+        owner={{ ansible_ssh_user }}
+        group=root
+
+- name: place redis config
+  sudo: yes
+  template: src=redis.conf.j2 
+            dest=/etc/redis/redis.conf
+            owner={{ ansible_ssh_user }}
+            group=root
+
+- name: place redis init script
+  sudo: yes
+  template: src=redis_init_script.j2 
+            dest=/etc/init.d/redis
+            owner={{ ansible_ssh_user }}
+            group=root
+            mode=0755
+
+- name: update redis runlevels
+  sudo: yes
+  command: update-rc.d redis defaults
+
+- name: restart redis
+  sudo: yes
+  service:  name=redis 
+            state=restarted
+            enabled=yes
+  async: 60
+  poll: 0
